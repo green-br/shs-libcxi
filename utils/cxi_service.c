@@ -114,6 +114,9 @@ static void list_members(struct cxi_svc_desc *desc)
 			else if (desc->members[i].type == CXI_SVC_MEMBER_GID)
 				printf(" gid=%u",
 				       desc->members[i].svc_member.gid);
+			else if (desc->members[i].type == CXI_SVC_MEMBER_NET_NS)
+				printf(" netns=%u",
+					   desc->members[i].svc_member.netns);
 		}
 	}
 	printf("\n");
@@ -501,11 +504,19 @@ int consume_event(struct parser_state *s, yaml_event_t *event,
 					s->desc->members[s->member_idx].type = CXI_SVC_MEMBER_UID;
 				else if (strcmp(val, "gid") == 0)
 					s->desc->members[s->member_idx].type = CXI_SVC_MEMBER_GID;
+				else if (strcmp(val, "netns") == 0)
++					s->desc->members[s->member_idx].type = CXI_SVC_MEMBER_NET_NS;
 				else
 					errx(1, "Invalid input for Service Member 'type'\n");
 			} else if (strcmp(s->key, "id") == 0) {
-				s->desc->members[s->member_idx].svc_member.gid =
-					(uid_t)(atoi(val));
+				if(s->desc->members[s->member_idx].type == CXI_SVC_MEMBER_NET_NS) {
+					s->desc->members[s->member_idx].svc_member.netns =
+							strtoul(val, NULL, 10);
+				}
+				else {
+					s->desc->members[s->member_idx].svc_member.gid =
+							(uid_t)(atoi(val));
+				}
 				s->member_idx++;
 			} else if (strcmp(s->key, "vni") == 0) {
 				if (s->vni_idx >= CXI_SVC_MAX_VNIS)
