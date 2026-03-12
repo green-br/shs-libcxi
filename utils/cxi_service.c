@@ -130,7 +130,7 @@ static void list_vnis(struct cxi_svc_desc *desc)
 	if (!desc->restricted_vnis) {
 		printf(" All");
 	} else {
-		for (i = 0; i < desc->num_vld_vnis; i++)
+		for (i = 0; i < desc->num_vld_vnis; i)
 			printf(" %d", desc->vnis[i]);
 	}
 	printf("\n");
@@ -505,7 +505,7 @@ int consume_event(struct parser_state *s, yaml_event_t *event,
 				else if (strcmp(val, "gid") == 0)
 					s->desc->members[s->member_idx].type = CXI_SVC_MEMBER_GID;
 				else if (strcmp(val, "netns") == 0)
-+					s->desc->members[s->member_idx].type = CXI_SVC_MEMBER_NET_NS;
+					s->desc->members[s->member_idx].type = CXI_SVC_MEMBER_NET_NS;
 				else
 					errx(1, "Invalid input for Service Member 'type'\n");
 			} else if (strcmp(s->key, "id") == 0) {
